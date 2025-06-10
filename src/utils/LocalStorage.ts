@@ -1,4 +1,4 @@
-export function setItem(key, value) {
+export function setItem(key: string, value: string): void {
   try {
     window.localStorage.setItem(key, value);
   } catch (error) {
@@ -6,7 +6,7 @@ export function setItem(key, value) {
   }
 }
 
-export function getItem(key) {
+export function getItem(key: string): any {
   try {
     const item = window.localStorage.getItem(key);
     return item ? JSON.parse(item) : null;
@@ -15,7 +15,7 @@ export function getItem(key) {
   }
 }
 
-export function removeItem(key) {
+export function removeItem(key: string): void {
   try {
     window.localStorage.removeItem(key);
   } catch (error) {

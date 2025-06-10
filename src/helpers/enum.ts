@@ -4,8 +4,17 @@ import { IoMdPersonAdd } from 'react-icons/io';
 import { IoPieChartSharp } from 'react-icons/io5';
 import { MdOutlineFestival } from 'react-icons/md';
 import { TbReportAnalytics } from 'react-icons/tb';
+import { IconType } from 'react-icons';
 
-export const SIDEBAR_MENU_LIST = [
+export interface SidebarMenuItem {
+  name: string;
+  link: string;
+  shortname: string;
+  icon: IconType;
+  id: number;
+}
+
+export const SIDEBAR_MENU_LIST: SidebarMenuItem[] = [
   {
     name: 'Funtions',
     link: '/',
@@ -50,12 +59,17 @@ export const SIDEBAR_MENU_LIST = [
   },
 ];
 
-export const FLOATING_SIDBAR_POSITIONS = [
-  { topPosition: '54px', topPosition2: '56px' },
-  { topPosition: '102px', topPosition2: '112px' },
-  { topPosition: '150px', topPosition2: '168px' },
-  { topPosition: '198px', topPosition2: '224px' },
-  { topPosition: '246px', topPosition2: '280px' },
-  { topPosition: '294px', topPosition2: '336px' },
-  { topPosition: '342px', topPosition2: '392px' },
-];
+export interface FloatingSidebarPosition {
+  topPosition: string;
+  topPosition2: string;
+}
+
+export const FLOATING_SIDBAR_POSITIONS: Record<number, FloatingSidebarPosition> = {
+  0: { topPosition: '54px', topPosition2: '56px' },
+  1: { topPosition: '102px', topPosition2: '112px' },
+  2: { topPosition: '150px', topPosition2: '168px' },
+  3: { topPosition: '198px', topPosition2: '224px' },
+  4: { topPosition: '246px', topPosition2: '280px' },
+  5: { topPosition: '294px', topPosition2: '336px' },
+  6: { topPosition: '342px', topPosition2: '392px' },
+};

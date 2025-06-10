@@ -1,14 +1,15 @@
 import { dbManager } from '@/services/IndexedDBManager';
-import { uniqueValuesAPI } from '../services/apiService';
+import { uniqueValuesAPI } from '@/services/UniqueValuesApi';
+import { QueryClient } from '@tanstack/react-query';
 
 // Helper to sync data when user creates new entries
-export const syncUniqueValue = async (type, value, queryClient) => {
+export const syncUniqueValue = async (type: string, value: string, queryClient: QueryClient): Promise<void> => {
   try {
     // Add to IndexedDB immediately
     await dbManager.addUniqueValue(type, value);
 
     // Update React Query cache
-    queryClient.setQueryData(['uniqueValues'], (oldData) => {
+    queryClient.setQueryData(['uniqueValues'], (oldData: any) => {
       if (!oldData) return oldData;
 
       const currentValues = oldData[type] || [];
@@ -28,14 +29,14 @@ export const syncUniqueValue = async (type, value, queryClient) => {
   }
 };
 
-export const valueExists = (list, value) => {
+export const valueExists = (list: string[], value: string): boolean => {
   return list.some(
     (item) => item.toLowerCase().trim() === value.toLowerCase().trim()
   );
 };
 
 // Helper to get all unique values from a specific type
-export const getUniqueValuesByType = async (type) => {
+export const getUniqueValuesByType = async (type: string): Promise<string[]> => {
   try {
     return await dbManager.getUniqueValues(type);
   } catch (error) {
@@ -44,7 +45,7 @@ export const getUniqueValuesByType = async (type) => {
   }
 };
 
-export const forceRefreshUniqueValues = async (queryClient) => {
+export const forceRefreshUniqueValues = async (queryClient: QueryClient) => {
   try {
     const apiData = await uniqueValuesAPI.getAllUniqueValues();
 
@@ -68,11 +69,11 @@ export const forceRefreshUniqueValues = async (queryClient) => {
 };
 
 // Helper to clear all cached data (useful for logout)
-export const clearAllUniqueValues = async (queryClient) => {
+export const clearAllUniqueValues = async (queryClient: QueryClient): Promise<void> => {
   try {
     await dbManager.clearAllData();
     queryClient.setQueryData(['uniqueValues'], null);
-    queryClient.invalidateQueries(['uniqueValues']);
+    queryClient.invalidateQueries({ queryKey: ['uniqueValues'] });
     console.log('Cleared all unique values cache');
   } catch (error) {
     console.error('Error clearing cache:', error);
@@ -81,7 +82,7 @@ export const clearAllUniqueValues = async (queryClient) => {
 };
 
 // Helper to export data (for backup or debugging)
-export const exportUniqueValues = async () => {
+export const exportUniqueValues = async (): Promise<void> => {
   try {
     const data = await dbManager.getAllUniqueValues();
     const blob = new Blob([JSON.stringify(data, null, 2)], {
@@ -105,13 +106,13 @@ export const exportUniqueValues = async () => {
 };
 
 // Helper to import data (for restore or migration)
-export const importUniqueValues = async (file, queryClient) => {
+export const importUniqueValues = async (file: File, queryClient: QueryClient): Promise<any> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
     reader.onload = async (event) => {
       try {
-        const data = JSON.parse(event.target.result);
+        const data = JSON.parse(event.target?.result as string);
 
         // Validate data structure
         const requiredTypes = [
@@ -155,11 +156,11 @@ export const importUniqueValues = async (file, queryClient) => {
 };
 
 // Network status helper
-export const isOnline = () => navigator.onLine;
+export const isOnline = (): boolean => navigator.onLine;
 
 // Helper to merge new API data with existing local data
-export const mergeUniqueValues = (existingData, newApiData) => {
-  const merged = {};
+export const mergeUniqueValues = (existingData: Record<string, string[]>, newApiData: Record<string, string[]>) => {
+  const merged: Record<string, string[]> = {};
 
   Object.keys(newApiData).forEach((type) => {
     const existing = existingData[type] || [];

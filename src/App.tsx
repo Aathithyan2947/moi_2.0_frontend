@@ -8,9 +8,14 @@ import FloatingSideBar from './components/layout/Sidebar/FloatingSidebar';
 import { dbManager } from './services/IndexedDBManager';
 import MobileMessage from './components/layout/MobileMessage';
 
+interface HoveredItem {
+  id: number;
+  rank?: number;
+}
+
 function App() {
-  const [hoveredItem, setHoveredItem] = useState(null);
-  const [sideBarOpen, setSideBarOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<HoveredItem | null>(null);
+  const [sideBarOpen, setSideBarOpen] = useState<boolean>(false);
   const isMobile = useIsMobile();
 
   useEffect(() => {

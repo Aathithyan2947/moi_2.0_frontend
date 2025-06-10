@@ -1,4 +1,20 @@
-export const SIDEBAR_CONFIG = {
+interface SidebarDataItem {
+  title: string;
+  link: string;
+}
+
+interface SidebarExtensionData {
+  sub_heading: string;
+  data: SidebarDataItem[];
+}
+
+interface SidebarConfigItem {
+  root_heading: string;
+  id: number;
+  extension_data: SidebarExtensionData[];
+}
+
+export const SIDEBAR_CONFIG: Record<number, SidebarConfigItem> = {
   1: {
     root_heading: 'Functions',
     id: 1,

@@ -1,4 +1,4 @@
-export function isSidebarItemActive(currentPath, itemLink) {
+export function isSidebarItemActive(currentPath: string, itemLink: string): boolean {
   if (itemLink === '/') {
     return currentPath === '/';
   }

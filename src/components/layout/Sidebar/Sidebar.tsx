@@ -12,8 +12,20 @@ import { isSidebarItemActive } from '../../../helpers/pathMatcher';
 import { removeItem } from '../../../utils/LocalStorage';
 import { toast } from 'react-toastify';
 
-function Sidebar({ hoveredItem, setHoveredItem, sideBarOpen, setSideBarOpen }) {
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+interface HoveredItem {
+  id: number;
+  rank?: number;
+}
+
+interface SidebarProps {
+  hoveredItem: HoveredItem | null;
+  setHoveredItem: (item: HoveredItem | null) => void;
+  sideBarOpen: boolean;
+  setSideBarOpen: (open: boolean) => void;
+}
+
+function Sidebar({ hoveredItem, setHoveredItem, sideBarOpen, setSideBarOpen }: SidebarProps) {
+  const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
   const toggleSidebar = () => setSideBarOpen((prev) => !prev);
   const location = useLocation();
   const path = location.pathname;

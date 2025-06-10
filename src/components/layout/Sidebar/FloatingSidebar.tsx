@@ -1,11 +1,20 @@
 import { Link } from 'react-router-dom';
-
 import { SIDEBAR_CONFIG } from './FloatingSidebarConfig';
-
 import { FLOATING_SIDBAR_POSITIONS } from '../../../helpers/enum';
 
-function FloatingSideBar({ sideBarOpen, hoveredItem, setHoveredItem }) {
-  const sidebarData = SIDEBAR_CONFIG?.[hoveredItem?.id];
+interface HoveredItem {
+  id: number;
+  rank?: number;
+}
+
+interface FloatingSideBarProps {
+  sideBarOpen: boolean;
+  hoveredItem: HoveredItem | null;
+  setHoveredItem: (item: HoveredItem | null) => void;
+}
+
+function FloatingSideBar({ sideBarOpen, hoveredItem, setHoveredItem }: FloatingSideBarProps) {
+  const sidebarData = SIDEBAR_CONFIG?.[hoveredItem?.id || 0];
 
   if (
     hoveredItem?.id == 2 ||
@@ -13,7 +22,7 @@ function FloatingSideBar({ sideBarOpen, hoveredItem, setHoveredItem }) {
     hoveredItem?.id === 4 ||
     hoveredItem?.id === 5
   )
-    return;
+    return null;
 
   return (
     <div
@@ -24,15 +33,15 @@ function FloatingSideBar({ sideBarOpen, hoveredItem, setHoveredItem }) {
       }}
       style={{
         top: sideBarOpen
-          ? FLOATING_SIDBAR_POSITIONS[hoveredItem?.rank]?.topPosition
-          : FLOATING_SIDBAR_POSITIONS[hoveredItem?.rank]?.topPosition2,
+          ? FLOATING_SIDBAR_POSITIONS[hoveredItem?.rank || 0]?.topPosition
+          : FLOATING_SIDBAR_POSITIONS[hoveredItem?.rank || 0]?.topPosition2,
         left: sideBarOpen ? '224px' : '60px',
       }}
       className={`transition-all duration-300 select-none px-6 py-5 min-w-72 min-h-[100px] max-w-fit max-h-fit z-50 border border-black bg-sidebarBlue rounded-r-md fixed shadow-lg`}
     >
       <div className=''>
         <h2 className='font-semibold text-sm mb-2 text-white'>
-          {SIDEBAR_CONFIG?.[hoveredItem?.id]?.root_heading}
+          {SIDEBAR_CONFIG?.[hoveredItem?.id || 0]?.root_heading}
         </h2>
 
         {sidebarData && 'extension_data' in sidebarData && (

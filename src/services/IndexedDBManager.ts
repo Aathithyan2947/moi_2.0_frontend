@@ -1,12 +1,16 @@
-// indexedDBManager.js
-class IndexedDBManager {
-  constructor() {
-    this.dbName = 'PayerDataDB';
-    this.version = 1;
-    this.db = null;
-  }
+// indexedDBManager.ts
+interface UniqueValueRecord {
+  type: string;
+  data: string[];
+  lastUpdated: string;
+}
 
-  async init() {
+class IndexedDBManager {
+  private dbName: string = 'PayerDataDB';
+  private version: number = 1;
+  private db: IDBDatabase | null = null;
+
+  async init(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName, this.version);
 
@@ -17,7 +21,7 @@ class IndexedDBManager {
       };
 
       request.onupgradeneeded = (event) => {
-        const db = event.target.result;
+        const db = (event.target as IDBOpenDBRequest).result;
 
         // Create object store for unique values
         if (!db.objectStoreNames.contains('uniqueValues')) {
@@ -30,11 +34,11 @@ class IndexedDBManager {
     });
   }
 
-  async getUniqueValues(type) {
+  async getUniqueValues(type: string): Promise<string[]> {
     if (!this.db) await this.init();
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['uniqueValues'], 'readonly');
+      const transaction = this.db!.transaction(['uniqueValues'], 'readonly');
       const store = transaction.objectStore('uniqueValues');
       const request = store.get(type);
 
@@ -45,11 +49,11 @@ class IndexedDBManager {
     });
   }
 
-  async setUniqueValues(type, data) {
+  async setUniqueValues(type: string, data: string[]): Promise<IDBValidKey> {
     if (!this.db) await this.init();
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['uniqueValues'], 'readwrite');
+      const transaction = this.db!.transaction(['uniqueValues'], 'readwrite');
       const store = transaction.objectStore('uniqueValues');
       const request = store.put({
         type,
@@ -62,7 +66,7 @@ class IndexedDBManager {
     });
   }
 
-  async addUniqueValue(type, newValue) {
+  async addUniqueValue(type: string, newValue: string): Promise<string[]> {
     const existingData = await this.getUniqueValues(type);
 
     // Check if value already exists (case-insensitive)
@@ -79,17 +83,17 @@ class IndexedDBManager {
     return existingData;
   }
 
-  async getAllUniqueValues() {
+  async getAllUniqueValues(): Promise<Record<string, string[]>> {
     if (!this.db) await this.init();
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['uniqueValues'], 'readonly');
+      const transaction = this.db!.transaction(['uniqueValues'], 'readonly');
       const store = transaction.objectStore('uniqueValues');
       const request = store.getAll();
 
       request.onsuccess = () => {
-        const result = {};
-        request.result.forEach((item) => {
+        const result: Record<string, string[]> = {};
+        request.result.forEach((item: UniqueValueRecord) => {
           result[item.type] = item.data;
         });
         resolve(result);
@@ -98,11 +102,11 @@ class IndexedDBManager {
     });
   }
 
-  async clearAllData() {
+  async clearAllData(): Promise<void> {
     if (!this.db) await this.init();
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['uniqueValues'], 'readwrite');
+      const transaction = this.db!.transaction(['uniqueValues'], 'readwrite');
       const store = transaction.objectStore('uniqueValues');
       const request = store.clear();
 

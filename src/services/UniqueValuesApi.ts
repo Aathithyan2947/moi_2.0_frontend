@@ -1,27 +1,31 @@
 import axiosInstance from '@/utils/AxiosInstance';
 
+interface ApiResponse<T> {
+  data: T;
+}
+
 export const uniqueValuesAPI = {
-  getUniqueNames: async () => {
+  getUniqueNames: async (): Promise<ApiResponse<string[]>> => {
     const response = await axiosInstance.get('/payers/unique/names');
     return response.data;
   },
 
-  getUniqueGifts: async () => {
+  getUniqueGifts: async (): Promise<ApiResponse<string[]>> => {
     const response = await axiosInstance.get('/payers/unique/gifts');
     return response.data;
   },
 
-  getUniqueRelations: async () => {
+  getUniqueRelations: async (): Promise<ApiResponse<string[]>> => {
     const response = await axiosInstance.get('/payers/unique/relations');
     return response.data;
   },
 
-  getUniqueCities: async () => {
+  getUniqueCities: async (): Promise<ApiResponse<string[]>> => {
     const response = await axiosInstance.get('/payers/unique/cities');
     return response.data;
   },
 
-  getUniqueWorkTypes: async () => {
+  getUniqueWorkTypes: async (): Promise<ApiResponse<string[]>> => {
     const response = await axiosInstance.get('/payers/unique/works');
     return response.data;
   },
